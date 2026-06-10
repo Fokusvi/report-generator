@@ -1,0 +1,1833 @@
+<!DOCTYPE html>
+<html lang="ru">
+	<head>
+		<meta charset="UTF-8">
+			<meta name="viewport" content="width=device-width, initial-scale=1.0">
+				<title>Генератор доклада</title>
+				<style>
+    * {
+        box-sizing: border-box;
+    }
+   .app-container {
+    max-width: 1180px;
+    margin: 0 auto;
+    position: relative;
+	}
+	.rank-sidebar {
+	position:relative;
+	overflow:visible;
+	margin-left: 15px;
+    width: 260px;
+    min-height: 420px;
+
+    padding: 10px;
+
+    border: 1px solid #3f482b;
+
+    background:
+        linear-gradient(180deg, rgba(255,255,255,0.04), rgba(0,0,0,0.35)),
+		url("assets/panel-bg.png") center center / cover;
+
+    box-shadow:
+        inset 0 0 15px rgba(0,0,0,.8);
+
+    flex-shrink: 0;
+	}
+	.panel-corner{
+    position:absolute;
+    width:95px;
+    height:95px;
+    background:url("assets/corner-tl.png") no-repeat;
+    background-size:contain;
+    z-index:9999;
+    pointer-events:none;
+}
+
+.sidebar-corner-tl{
+    top:-8px;
+    left:-15px;
+}
+
+.sidebar-corner-tr{
+    top:-8px;
+    right:-15px;
+    transform:scaleX(-1);
+}
+
+.sidebar-corner-bl{
+    bottom:-8px;
+    left:-15px;
+    transform:scaleY(-1);
+}
+.panel-border{
+    position:absolute;
+    z-index:9992;
+    pointer-events:none;
+}
+
+.sidebar-border-top{
+    position:absolute;
+    top:-21px;
+    left:4px;
+    right:3px;
+    height:47px;
+    background:url("assets/border-top.png") no-repeat;
+    background-size:100% 100%;
+}
+
+.sidebar-border-bottom{
+    position:absolute;
+    bottom:-23px;
+    left:4px;
+    right:3px;
+    height:47px;
+    background:url("assets/border-top.png") no-repeat;
+    background-size:100% 100%;
+}
+
+.sidebar-border-left{
+    position:absolute;
+    top:5px;
+    bottom:-6px;
+    left:-24px;
+    width:47px;
+    background:url("assets/border-vertical.png") no-repeat;
+    background-size:100% 100%;
+}
+
+.sidebar-border-right{
+    position:absolute;
+    top:5px;
+    bottom:-6px;
+    right:-24px;
+    width:47px;
+    background:url("assets/border-vertical.png") no-repeat;
+    background-size:100% 100%;
+}
+.sidebar-corner-br{
+    bottom:-8px;
+    right:-15px;
+    transform:scale(-1,-1);
+}
+	.rank-sidebar label {
+	font-family: 'Oswald', sans-serif;
+	text-align: center;
+    font-size: 18px;
+    margin-bottom: 10px;
+    display: block;
+    color: #cfc49a;
+    border-bottom: 1px solid #3f482b;
+    padding-bottom: 12px;
+	}
+	.rank-sidebar select {
+    display: none;
+	}
+	.rank-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.rank-btn {
+    width: 100%;
+    height: 50px;
+    padding: 6px 10px;
+
+    font-family: 'Oswald', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+
+    position: relative;
+    overflow: hidden;
+
+    text-align: center;
+
+    background: linear-gradient(180deg,#182015,#0b0f0a);
+    border: 1px solid #3f482b;
+
+    color: #d8d0aa;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+.rank-btn:hover {
+    background: linear-gradient(180deg,#2a3521,#11170f);
+}
+
+.rank-btn.active {
+    background: linear-gradient(180deg,#4a5b2f,#29361c);
+    border-color: #8fa85c;
+    color: #ffffff;
+}
+.rank-btn.active::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 5px;
+    height: 100%;
+    background: #d6e27a;
+    box-shadow: 0 0 12px rgba(214, 226, 122, 0.8);
+}
+.rank-icon {
+    display: inline-block;
+    width: 24px;
+    margin-right: 12px;
+    color: #b9c96b;
+    font-weight: bold;
+    text-align: center;
+}
+	.layout {
+    display: flex;
+    gap: 25px;
+    align-items: flex-start;
+	}
+
+	.main-panel {
+    flex: 1;
+    min-width: 0;
+	}
+	.top-row{
+    display:flex;
+    gap:20px;
+    align-items:flex-end;
+}
+
+.top-row .form-group{
+    flex:1;
+}
+
+.bottom-row{
+    display:flex;
+    gap:20px;
+    align-items:flex-end;
+    margin-top:2px;
+}
+
+.bottom-row .form-group{
+    flex:1;
+    margin-bottom:0;
+}
+
+.bottom-row button{
+    width:280px;
+    height:38px;
+    margin:0 0 5px 0;
+    font-size:13px;
+}
+	.settings-panel{
+	width:730px;
+	position:relative;
+    border:1px solid #3f482b;
+    background:
+    linear-gradient(180deg, rgba(255,255,255,0.04), rgba(0,0,0,0.35)),
+    url("assets/panel-bg.png") center center / cover;
+    box-shadow: inset 0 0 18px rgba(0,0,0,.85);
+    padding:12px;
+
+    margin-left:-15px;
+
+    margin-bottom:2px;
+}
+.panel-corner{
+    position:absolute;
+    width:95px;
+    height:95px;
+    background:url("assets/corner-tl.png") no-repeat;
+    background-size:contain;
+    z-index:9999;
+    pointer-events:none;
+}
+
+.corner-tl{
+    top:-8px;
+    left:-16px;
+}
+
+.corner-tr{
+    top:-8px;
+    right:-16px;
+    transform:scaleX(-1);
+}
+
+.corner-bl{
+    bottom:-8px;
+    left:-16px;
+    transform:scaleY(-1);
+}
+
+.corner-br{
+    bottom:-8px;
+    right:-16px;
+    transform:scale(-1,-1);
+}
+.panel-border{
+    position:absolute;
+    z-index:9992;
+    pointer-events:none;
+}
+
+.border-top{
+    top:-22px;
+    left:-8px;
+    right:-8px;
+    height:47px;
+    background:url("assets/border-top.png") no-repeat;
+    background-size:100% 100%;
+}
+
+.border-bottom{
+    bottom:-22px;
+    left:-8px;
+    right:-8px;
+    height:47px;
+    background:url("assets/border-top.png") no-repeat;
+    background-size:100% 100%;
+    transform:scaleY(-1);
+}
+
+.border-left{
+    top:5px;
+    bottom:-6px;
+    left:-24px;
+    width:47px;
+    background:url("assets/border-vertical.png") no-repeat;
+    background-size:100% 100%;
+}
+
+.border-right{
+    top:5px;
+    bottom:-6px;
+    right:-24px;
+    width:47px;
+    background:url("assets/border-vertical.png") no-repeat;
+    background-size:100% 100%;
+}
+.reports-panel {
+    position: relative;
+	overflow: visible;
+	border: 1px solid #3f482b;
+    background: 
+	linear-gradient(180deg, rgba(255,255,255,0.04), rgba(0,0,0,0.35)),
+    url("assets/panel-bg.png") center center / cover;
+    box-shadow: inset 0 0 18px rgba(0,0,0,.85);
+    padding: 12px;
+    margin-top: 4px;
+}
+.panel-title {
+	font-family: 'Oswald', sans-serif;
+    color: #cfc49a;
+    font-size: 18px;
+    letter-spacing: 2px;
+    font-weight: 700;
+    text-transform: uppercase;
+
+    text-align: center;
+
+    border-bottom: 1px solid #3f482b;
+    padding-bottom: 8px;
+    margin-bottom: 8px;
+}
+	body {
+        margin: 0;
+        min-height: 100vh;
+        padding: 0px;
+        font-family: "Segoe UI", Arial, sans-serif;
+        color: #d8d0aa;
+        background:
+            radial-gradient(circle at top, rgba(70, 85, 45, 0.25), transparent 35%),
+            linear-gradient(135deg, #080a07 0%, #11160e 45%, #080a07 100%);
+    }
+
+    /*h1 {
+        margin: 0 0 10px 0;
+		padding: 12px 20px;
+		font-size: 26px;
+		letter-spacing: 3px;
+		text-transform: uppercase;
+		color: #cfc49a;
+		border: 1px solid #3f482b;
+		background: linear-gradient(180deg, #1b2117, #0b0e09);
+		box-shadow: inset 0 0 25px rgba(0,0,0,0.8), 0 0 20px rgba(0,0,0,0.7);
+    }*/
+
+    .form-group {
+        margin-bottom: 6px;
+    }
+
+    label {
+        display: block;
+		margin-bottom: 8px;
+
+		font-family: 'Oswald', sans-serif;
+
+		color: #b9b08a;
+		font-weight: 500;
+		text-transform: uppercase;
+		letter-spacing: 1px;
+		font-size: 13px;
+    }
+
+    input, select {
+        width: 100%;
+		padding: 8px 12px;
+		margin-bottom: 5px;
+		color: #e2d8ad;
+		background: linear-gradient(180deg, #151a12, #080b07);
+		border: 1px solid #4e5d2d;
+		border-radius: 3px;
+		outline: none;
+		box-shadow: inset 0 0 10px rgba(0,0,0,0.85);
+		font-size: 14px;
+    }
+
+    button {
+        padding: 8px 18px;
+		font-size: 14px;
+        color: #e4d9aa;
+        background: linear-gradient(180deg, #485326, #1a210f);
+        border: 1px solid #73833e;
+        cursor: pointer;
+        margin-right: 10px;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        font-weight: 700;
+        box-shadow: inset 0 0 12px rgba(0,0,0,0.7), 0 0 12px rgba(0,0,0,0.6);
+    }
+
+    button:hover {
+        background: linear-gradient(180deg, #5c6b2e, #202812);
+    }
+
+    button:disabled {
+        background: #2d3027;
+        color: #8f8a72;
+        cursor: not-allowed;
+    }
+
+    .report-container {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        margin-top: 12px;
+    }
+
+    .report-block {
+         position: relative;
+    min-height: 50px;
+    padding: 5px 120px 5px 65px;
+
+    border: 1px solid #3e4b27;
+    background: linear-gradient(180deg, #182012, #0d110b);
+    color: #d8d0aa;
+
+    box-shadow:
+        inset 0 0 18px rgba(0,0,0,0.85),
+        0 0 10px rgba(0,0,0,0.45);
+    }
+	.report-number {
+     position: absolute;
+    left: 8px;
+    top: 4px;
+
+    width: 48px;
+    height: 58px;
+
+    background: url("assets/shield.png") center center no-repeat;
+    background-size: contain;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    border: none;
+    box-shadow: none;
+}
+
+.report-number div {
+    font-size: 18px;
+    font-weight: 800;
+    line-height: 1;
+}
+
+.report-number span {
+    margin-top: 2px;
+    color: #e6dfaa;
+    font-size: 10px;
+}
+
+.report-content {
+    padding-top: 4px;
+}
+
+.report-text {
+    font-size: 14px;
+    line-height: 1.2;
+    color: #e6dcae;
+    margin-bottom: 12px;
+}
+
+.report-tags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.report-tags span {
+    border: 1px solid #4c5832;
+    background: linear-gradient(180deg, #171d12, #090c07);
+    padding: 3px 8px;
+
+    font-size: 10px;
+    color: #cfc49a;
+    letter-spacing: 1px;
+}
+	
+    .report-block strong {
+        display: block;
+        color: #9fba62;
+        font-size: 15px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 8px;
+    }
+
+    .copy-btn{
+    position:absolute;
+
+    top:5px;
+    right:3px;
+
+    width:158px;
+    height:52px;
+
+    padding:0;
+    border:none;
+    background:none;
+    box-shadow:none;
+
+    cursor:pointer;
+	}
+	.copy-btn img{
+    width:100%;
+    height:100%;
+    object-fit:fill;
+    display:block;
+	}
+    .reminder {
+        margin-top: 8px;
+		padding: 8px;
+		min-height: 46px;
+
+		display:flex;
+		align-items:center;
+		justify-content:center;
+		gap:18px;
+
+		border: 1px solid #5f6c34;
+
+		background:
+		linear-gradient(180deg, rgba(255,255,255,0.04), rgba(0,0,0,0.35)),
+		url("assets/panel-bg.png") center center / cover;
+
+		color: #d8d0aa;
+		font-weight: bold;
+
+		box-shadow: inset 0 0 18px rgba(0,0,0,0.8);
+    }
+
+    #nextReportTime {
+        color: #9fca4c;
+		font-size: 22px;
+		margin: 0 10px;
+    }
+
+    .loading {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: 3px solid rgba(180,180,120,.3);
+        border-radius: 50%;
+        border-top-color: #b8c56a;
+        animation: spin 1s ease-in-out infinite;
+        margin-left: 10px;
+    }
+
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+
+    .post-image {
+        margin-top: 20px;
+        text-align: center;
+    }
+
+    .post-image img {
+        max-width: 100%;
+        height: auto;
+    }
+	.rank-icon{
+     position:absolute;
+
+    left:8px;
+    top:50%;
+    transform:translateY(-50%);
+
+    width:34px;
+    height:34px;
+
+    background-size:contain;
+    background-position:center;
+    background-repeat:no-repeat;
+
+    color:transparent;
+}
+.rank-btn[data-group="private"] .rank-icon{
+    background-image: url("assets/rank-private.png");
+}
+
+.rank-btn[data-group="sergeant"] .rank-icon{
+    background-image: url("assets/rank-sergeant.png");
+}
+
+.rank-btn[data-group="warrant"] .rank-icon{
+    background-image: url("assets/rank-warrant.png");
+}
+
+.rank-btn[data-group="junior"] .rank-icon{
+    background-image: url("assets/rank-officer-jr.png");
+}
+
+.rank-btn[data-group="senior"] .rank-icon{
+    background-image: url("assets/rank-officer-sr.png");
+}
+
+.rank-btn[data-group="high"] .rank-icon{
+    background-image: url("assets/rank-officer-high.png");
+}
+.sidebar-emblem{
+    margin-top: 24px;
+    height: 170px;
+
+    background: url("assets/emblem-bg.png") center center no-repeat;
+    background-size: contain;
+
+    opacity: 0.40;
+    filter: grayscale(1);
+}
+#generateBtn{
+    width:280px;
+    height:65px;
+
+    padding:5px;
+    border:none;
+    background:none;
+    box-shadow:none;
+
+    cursor:pointer;
+}
+#reportSubmittedBtn{
+    width:170px;
+    height:45px;
+
+    padding:0;
+    border:none;
+    background:none;
+    box-shadow:none;
+
+    cursor:pointer;
+}
+#reportSubmittedBtn:hover{
+    background:none;
+}
+#reportSubmittedBtn img{
+    width:100%;
+    height:100%;
+    display:block;
+    object-fit:fill;
+}
+.gear-icon{
+    width: 70px;
+    height: 70px;
+
+    background: url("assets/gear.png") center center no-repeat;
+    background-size: contain;
+
+    flex-shrink: 0;
+
+    margin-right: -20px;
+}
+.header-banner{
+    width: 100%;
+    height: 115px;
+
+    background: url("assets/header-banner.png") no-repeat;
+    background-size: 627px auto;
+    background-position: 0 -132px;
+
+    margin: 1px 0 8px 0;
+}
+/* НОВЫЙ CSS НАЧИНАЕТСЯ ЗДЕСЬ */
+
+#postName,
+#rank,
+#objectName{
+    display:none;
+}
+
+.custom-select{
+    position:relative;
+    width:100%;
+    color:#e2d8ad;
+    font-size:14px;
+    z-index:50;
+}
+
+.custom-select-current{
+    min-height:38px;
+    padding:8px 40px 8px 12px;
+
+    background:linear-gradient(180deg,#151a12,#080b07);
+    border:1px solid #4e5d2d;
+    box-shadow:inset 0 0 10px rgba(0,0,0,.85);
+
+    cursor:pointer;
+
+    font-size:13px;
+    line-height:1.15;
+
+    white-space:normal;
+    overflow:hidden;
+}
+
+.custom-arrow{
+    position:absolute;
+    right:12px;
+    top:8px;
+    color:#d8d0aa;
+}
+
+.custom-select-list{
+    display:none;
+    position:absolute;
+    top:40px;
+    left:0;
+    right:0;
+    background:linear-gradient(180deg,#1b2414,#090c07);
+    border:1px solid #6f7f3e;
+    box-shadow:0 0 18px rgba(0,0,0,.9);
+    z-index:99999;
+}
+
+.custom-select.open .custom-select-list{
+    display:block;
+}
+
+.custom-option{
+    padding:10px 12px;
+    border-bottom:1px solid #3f482b;
+    cursor:pointer;
+    color:#d8d0aa;
+}
+
+.custom-option:hover{
+    background:linear-gradient(180deg,#4a5b2f,#29361c);
+    color:#fff;
+}
+.top-status{
+    position:absolute;
+    top:8px;
+    left:631px;
+
+    width:382px;
+    height:103px;
+
+    border:1px solid #3f482b;
+    background:linear-gradient(180deg,#1b2117,#0b0e09);
+    box-shadow:inset 0 0 18px rgba(0,0,0,.9), 0 0 12px rgba(0,0,0,.7);
+
+    color:#cfc49a;
+    text-align:center;
+    padding-top:10px;
+
+    z-index:20;
+}
+
+#clockTime{
+    font-size:29px;
+    letter-spacing:7px;
+    font-weight:700;
+}
+
+#clockDate{
+    margin-top:11px;
+    font-size:18px;
+    letter-spacing:1px;
+}
+.clock-corner-tl{
+    top:-8px;
+    left:-15px;
+}
+
+.clock-corner-tr{
+    top:-8px;
+    right:-15px;
+    transform:scaleX(-1);
+}
+
+.clock-corner-bl{
+    bottom:-8px;
+    left:-15px;
+    transform:scaleY(-1);
+}
+
+.clock-corner-br{
+    bottom:-8px;
+    right:-15px;
+    transform:scale(-1,-1);
+}
+.clock-border-top{
+    position:absolute;
+
+    top:-23px;
+    left:-5px;
+    right:-8px;
+
+    height:47px;
+
+    background:url("assets/border-top.png") no-repeat;
+    background-size:100% 100%;
+}
+
+.clock-border-bottom{
+    position:absolute;
+
+    bottom:-23px;
+    left:-5px;
+    right:-8px;
+
+    height:47px;
+
+    background:url("assets/border-top.png") no-repeat;
+    background-size:100% 100%;
+}
+
+.clock-border-left{
+    position:absolute;
+
+    top:-5px;
+    bottom:-5px;
+    left:-24px;
+
+    width:47px;
+
+    background:url("assets/border-vertical.png") no-repeat;
+    background-size:100% 100%;
+}
+
+.clock-border-right{
+    position:absolute;
+
+    top:-5px;
+    bottom:-5px;
+    right:-24px;
+
+    width:47px;
+
+    background:url("assets/border-vertical.png") no-repeat;
+    background-size:100% 100%;
+}
+#generateBtn{
+    width:250px;
+    height:62px;
+
+    padding:6px;
+    border:none;
+    background:none;
+    box-shadow:none;
+
+    cursor:pointer;
+}
+
+#generateBtn img{
+    width:100%;
+    height:100%;
+    display:block;
+    object-fit:fill;
+}
+/* Красивые числовые поля */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button{
+    -webkit-appearance:none;
+    margin:0;
+}
+
+input[type="number"]{
+    -moz-appearance:textfield;
+
+    height:28px;
+    line-height:28px;
+    padding:0;
+
+    background:linear-gradient(180deg,#1a2117,#0b0f0a);
+    border:1px solid #4d5a35;
+    color:#d8d0aa;
+
+    font-family:'Oswald',sans-serif;
+    font-size:18px;
+    text-align:center;
+
+    box-shadow:inset 0 0 10px rgba(0,0,0,.7);
+
+}
+#soundToggleBtn{
+    position:absolute;
+    top:22px;
+    right:-1px;
+
+    width:22px;
+    height:22px;
+
+    padding:0;
+    border:none;
+    background:none;
+    box-shadow:none;
+
+    cursor:pointer;
+    z-index:10000;
+}
+
+#soundToggleBtn img{
+    width:100%;
+    height:100%;
+    display:block;
+    object-fit:fill;
+}
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&display=swap" rel="stylesheet">
+			</head>
+			<body>
+				<div class="app-container">
+				<div class="header-banner"></div>
+				<div class="top-status">
+				<div class="panel-corner clock-corner-tl"></div>
+				<div class="panel-corner clock-corner-tr"></div>
+				<div class="panel-corner clock-corner-bl"></div>
+				<div class="panel-corner clock-corner-br"></div>
+				<div class="panel-border clock-border-top"></div>
+				<div class="panel-border clock-border-bottom"></div>
+				<div class="panel-border clock-border-left"></div>
+				<div class="panel-border clock-border-right"></div>
+				<div id="clockTime">--:--:--</div>
+				<div id="clockDate">--.--.----</div>
+				</div>
+				<div class="layout">
+				<div class="rank-sidebar">
+					<div class="panel-corner sidebar-corner-tl"></div>
+					<div class="panel-corner sidebar-corner-tr"></div>
+					<div class="panel-corner sidebar-corner-bl"></div>
+					<div class="panel-corner sidebar-corner-br"></div>
+					<div class="panel-border sidebar-border-top"></div>
+					<div class="panel-border sidebar-border-bottom"></div>
+					<div class="panel-border sidebar-border-left"></div>
+					<div class="panel-border sidebar-border-right"></div>
+					<label for="rankGroup">
+						ГРУППА ЗВАНИЙ
+					</label>
+					<div class="rank-menu">
+							<button type="button" class="rank-btn" data-group="private">
+							<span class="rank-icon"></span>
+							Рядовые
+							</button>
+							<button type="button" class="rank-btn active" data-group="sergeant">
+								<span class="rank-icon">▰</span>
+								Сержанты и старшины
+							</button>
+
+							<button type="button" class="rank-btn" data-group="warrant">
+								<span class="rank-icon">◆</span>
+								Прапорщики
+							</button>
+
+							<button type="button" class="rank-btn" data-group="junior">
+								<span class="rank-icon">★</span>
+								Младший офицерский 
+							</button>
+
+							<button type="button" class="rank-btn" data-group="senior">
+								<span class="rank-icon">✦</span>
+								Старший офицерский 
+							</button>
+
+							<button type="button" class="rank-btn" data-group="high">
+								<span class="rank-icon">✹</span>
+								Высший офицерский 
+							</button>
+					</div>
+					<div class="sidebar-emblem"></div>
+					<select id="rankGroup">
+						<option value="private">Рядовые</option>
+						<option value="sergeant">Сержанты и старшины</option>
+						<option value="warrant">Прапорщики</option>
+						<option value="junior">Младший офицерский</option>
+						<option value="senior">Старший офицерский</option>
+						<option value="high">Высший офицерский</option>
+					</select>
+				</div>
+				<div class="main-panel">
+				<div class="settings-panel">
+				<div class="panel-corner corner-tl"></div>
+					<div class="panel-corner corner-tr"></div>
+					<div class="panel-corner corner-bl"></div>
+					<div class="panel-corner corner-br"></div>
+
+					<div class="panel-border border-top"></div>
+					<div class="panel-border border-bottom"></div>
+					<div class="panel-border border-left"></div>
+					<div class="panel-border border-right"></div>
+				<div class="panel-title">НАСТРОЙКИ ПОСТА</div>
+				<button id="soundToggleBtn">
+				<img id="soundToggleIcon" src="assets/sound-off.png">
+				</button>
+				<div class="top-row">
+				<div class="form-group">
+					<label for="composition">Состав (цифрой):</label>
+					<input type="number" id="composition" min="1" max="9" value="1">
+					</div>
+					<div class="form-group">
+					<label for="code">Код:</label>
+					<input type="number" id="code" min="1" max="4" value="1">
+					</div>
+					<div style="display:flex; gap:20px; align-items:flex-end;">
+						<div class="form-group" style="flex:2;">
+							<label for="postName">Название поста:</label>
+							<select id="postName">
+								<option value="Дежурный по КПП-1">Дежурный по КПП-1</option>
+								<option value="КПП-1">КПП-1</option>
+								<option value="КПП-1 (проходная)">КПП-1 (проходная)</option>
+								<option value="КПП-2">КПП-2</option>
+							</select>
+							<div class="custom-select" id="postSelect">
+							<div class="custom-select-current">
+								КПП-1
+								<span class="custom-arrow">▼</span>
+							</div>
+
+							<div class="custom-select-list">
+								<div class="custom-option">Дежурный по КПП-1</div>
+								<div class="custom-option">КПП-1</div>
+								<div class="custom-option">КПП-1 (проходная)</div>
+								<div class="custom-option">КПП-2</div>
+							</div>
+							</div>
+						</div>
+						<div class="form-group" id="objectGroup" style="flex:1; display:none;">
+							<label for="objectName">Объект:</label>
+							<select id="objectName">
+								<option value="РЛС">РЛС</option>
+								<option value="ОБ7">ОБ7</option>
+								<option value="ВС">ВС</option>
+							</select>
+							<div class="custom-select" id="objectSelect">
+							<div class="custom-select-current">
+								РЛС
+								<span class="custom-arrow">▼</span>
+							</div>
+							<div class="custom-select-list"></div>
+						</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="rank">Звание:</label>
+						<select id="rank">
+							<option value="Младший сержант">Младший сержант</option>
+							<option value="Сержант">Сержант</option>
+							<option value="Старший сержант">Старший сержант</option>
+							<option value="Старшина">Старшина</option>
+							<option value="Прапорщик">Прапорщик</option>
+							<option value="Старший прапорщик">Старший прапорщик</option>
+							<option value="Младший лейтенант">Младший лейтенант</option>
+							<option value="Лейтенант">Лейтенант</option>
+							<option value="Старший лейтенант">Старший лейтенант</option>
+							<option value="Капитан">Капитан</option>
+							<option value="Майор">Майор</option>
+							<option value="Подполковник">Подполковник</option>
+							<option value="Полковник">Полковник</option>
+							<option value="Генерал-майор">Генерал-майор</option>
+							<option value="Генерал-лейтенант">Генерал-лейтенант</option>
+							<option value="Генерал-полковник">Генерал-полковник</option>
+							<option value="Генерал армии">Генерал армии</option>
+						</select>
+						<div class="custom-select" id="rankSelect">
+						<div class="custom-select-current">
+							Младший сержант
+							<span class="custom-arrow">▼</span>
+						</div>
+
+						<div class="custom-select-list"></div>
+						</div>
+					</div>
+					</div>
+					<div class="bottom-row">
+					<div class="form-group">
+						<label for="name">Фамилия:</label>
+						<input type="text" id="name" value="Фамилия">
+						</div>
+						<div class="form-group" id="partnerGroup" style="display:none;">
+						<label for="partnerName">Фамилия напарника:</label>
+						<input type="text" id="partnerName" value="">
+						</div>
+						<button id="generateBtn">
+						<img src="assets/generate-btn.png">
+						</button>
+						</div>
+						<span id="loadingIndicator" class="loading" style="display: none;"></span>
+						<div class="reports-panel">
+						<div class="panel-title">ДОКЛАДЫ</div>
+						<div class="report-container" id="reportContainer">
+							<!-- Блоки отчетов будут добавляться сюда -->
+							</div>
+						</div>
+						<div class="reminder" id="reminder">
+        Следующий отчет в: <span id="nextReportTime">--:--</span>
+							<button id="reportSubmittedBtn">
+							<img src="assets/report-submitted-btn.png">
+							</button>
+						</div>
+						<audio id="reminderSound" src="reminder.mp3" preload="auto"></audio>
+						<script>
+        let startTime = null;
+        let updateInterval = null;
+        let nextReportTime = null;
+        let reminderCheckInterval = null;
+        let lastMinuteChecked = null;
+        let isPostActive = false;
+        let lastReportTime = null;
+		let copiedReports = new Set();
+		let soundEnabled = false;
+		
+        
+        // Загрузка сохраненных данных при запуске
+        function loadFromLocalStorage() {
+            const savedRank = localStorage.getItem('postReport_rank');
+            const savedName = localStorage.getItem('postReport_name');
+            const savedPostName = localStorage.getItem('postReport_postName');
+            const savedPostState = localStorage.getItem('postReport_postState');
+            const savedComposition = localStorage.getItem('postReport_composition');
+            
+            if (savedRank) document.getElementById('rank').value = savedRank;
+            if (savedName) document.getElementById('name').value = savedName;
+            if (savedPostName) document.getElementById('postName').value = savedPostName;
+            if (savedComposition) document.getElementById('composition').value = savedComposition;
+            
+            if (savedPostState) {
+                const state = JSON.parse(savedPostState);
+                if (state.isActive) {
+                    startTime = new Date(state.startTime);
+                    lastReportTime = state.lastReportTime ? new Date(state.lastReportTime) : null;
+                    isPostActive = true;
+                    document.getElementById('generateBtn').innerHTML =
+					'<img src="assets/endpost-btn.png">';
+                    
+                    // Рассчитываем следующее время отчета
+                    if (lastReportTime) {
+                        const nextReport = new Date(lastReportTime.getTime() + 20 * 60 * 1000);
+                        nextReportTime = nextReport;
+                        document.getElementById('nextReportTime').textContent = formatTime(nextReport);
+                    }
+                    
+                    // Восстанавливаем интервалы
+                    lastMinuteChecked = getMoscowTime().getUTCMinutes();
+                    updateReports();
+                    reminderCheckInterval = setInterval(checkReminder, 1000);
+                    updateInterval = setInterval(checkMinuteChange, 1000);
+                }
+            }
+        }
+        
+        // Сохранение данных в localStorage
+        function saveToLocalStorage() {
+            localStorage.setItem('postReport_rank', document.getElementById('rank').value);
+            localStorage.setItem('postReport_name', document.getElementById('name').value);
+            localStorage.setItem('postReport_postName', document.getElementById('postName').value);
+            localStorage.setItem('postReport_composition', document.getElementById('composition').value);
+            
+            const postState = {
+                isActive: isPostActive,
+                startTime: startTime ? startTime.getTime() : null,
+                lastReportTime: lastReportTime ? lastReportTime.getTime() : null
+            };
+            localStorage.setItem('postReport_postState', JSON.stringify(postState));
+        }
+        
+        // Обработчики изменений для сохранения
+        document.getElementById('rank').addEventListener('input', saveToLocalStorage);
+        document.getElementById('name').addEventListener('input', saveToLocalStorage);
+        document.getElementById('postName').addEventListener('change', function() {
+            saveToLocalStorage();
+            if (isPostActive) updateReports();
+        });
+		
+        document.getElementById('composition').addEventListener('change', function() {
+            saveToLocalStorage();
+			toggleObjectField();
+            if (isPostActive) updateReports();
+        });
+		
+        document.getElementById('code').addEventListener('change', function() {
+		saveToLocalStorage();
+		if (isPostActive) updateReports();
+		});
+		
+		document.getElementById('code').addEventListener('input', function() {
+		saveToLocalStorage();
+		if (isPostActive) updateReports();
+		});
+
+        function getMoscowTime() {
+            const now = new Date();
+            // Москва UTC+3
+            const moscowOffset = 3 * 60 * 60 * 1000;
+            const moscowTime = new Date(now.getTime() + moscowOffset);
+            return moscowTime;
+        }
+        
+        function formatTime(date) {
+            const hours = date.getUTCHours().toString().padStart(2, '0');
+            const minutes = date.getUTCMinutes().toString().padStart(2, '0');
+            return `${hours}:${minutes}`;
+        }
+        
+        function pluralizeMinutes(minutes) {
+            if (minutes % 100 >= 11 && minutes % 100 <= 19) { return `${minutes} минут`; 
+			} switch(minutes % 10) { case 1: return `${minutes} минута`; case 2: case 3: case 4: return `${minutes} минуты`; default: return `${minutes} минут`;
+			} } function calculateTimeOnPost() { if (!startTime) return pluralizeMinutes(0);
+			const now=getMoscowTime();
+			const diffMs = now - startTime;
+			const diffMinutes = Math.floor(diffMs / (1000 * 60));
+			return pluralizeMinutes(diffMinutes);
+			} 
+			function copyToClipboard(text, button, reportNumber) {
+
+			navigator.clipboard.writeText(text).then(() => {
+
+				copiedReports.add(reportNumber);
+
+				button.classList.add('copied');
+
+				button.innerHTML =
+					'<img src="assets/copied-btn.png" style="width:100%;height:100%;object-fit:fill;">';
+
+			}).catch(err => {
+				console.error('Ошибка копирования:', err);
+			});
+
+		}
+        
+        function createReportBlock(text, title) {
+            const block = document.createElement('div');
+    block.className = 'report-block';
+
+    const number = title.split('.')[0];
+
+    const numberBox = document.createElement('div');
+    numberBox.className = 'report-number';
+    numberBox.innerHTML = `<div>${number}</div><span>★</span>`;
+    block.appendChild(numberBox);
+
+    const contentWrap = document.createElement('div');
+    contentWrap.className = 'report-content';
+
+    const textElem = document.createElement('div');
+    textElem.className = 'report-text';
+    textElem.textContent = text;
+    contentWrap.appendChild(textElem);
+
+    const tags = document.createElement('div');
+    tags.className = 'report-tags';
+    const composition = document.getElementById('composition').value;
+	const code = document.getElementById('code').value;
+
+	tags.innerHTML = `
+		<span>СОСТАВ - ${composition}</span>
+		<span>КОД - ${code}</span>
+		<span>ДОКЛАД ОКОНЧЕН</span>
+	`;
+    contentWrap.appendChild(tags);
+
+    block.appendChild(contentWrap);
+
+    const copyBtn = document.createElement('button');
+	copyBtn.className = 'copy-btn';
+
+	if (copiedReports.has(number)) {
+    copyBtn.innerHTML = '<img src="assets/copied-btn.png" style="width:100%;height:100%;object-fit:fill;">';
+	} else {
+    copyBtn.innerHTML = '<img src="assets/copy-btn.png" style="width:100%;height:100%;object-fit:fill;">';
+	}
+
+	const fullText = `${text} | Состав - ${composition} | Код - ${code} | Доклад окончен`;
+
+	copyBtn.onclick = (e) => copyToClipboard(fullText, e.currentTarget, number);
+    block.appendChild(copyBtn);
+	
+    return block;
+        }
+        
+        function generateAllReports() {
+            if (isPostActive) {
+                // Если пост уже активен, завершаем его
+                endPost();
+                return;
+            }
+            
+            // Устанавливаем время начала поста
+            startTime = getMoscowTime();
+            lastReportTime = startTime;
+            lastMinuteChecked = startTime.getUTCMinutes();
+            isPostActive = true;
+            
+            // Меняем текст кнопки
+            document.getElementById('generateBtn').innerHTML =
+			'<img src="assets/endpost-btn.png">';
+            
+            updateReports();
+            
+            // Устанавливаем время следующего отчета (текущее время + 20 минут)
+            setNextReportTime(20);
+            
+            // Запускаем проверку напоминания
+            if (reminderCheckInterval) clearInterval(reminderCheckInterval);
+            reminderCheckInterval = setInterval(checkReminder, 1000);
+            
+            // Запускаем обновление отчетов (проверяем каждую секунду, но обновляем только при смене минуты)
+            if (updateInterval) clearInterval(updateInterval);
+            updateInterval = setInterval(checkMinuteChange, 1000);
+            
+            saveToLocalStorage();
+        }
+        
+        function endPost() {       
+		const sound = document.getElementById('reminderSound');
+		sound.pause();
+		sound.currentTime = 0;
+	    // Останавливаем все интервалы
+            if (updateInterval) clearInterval(updateInterval);
+            if (reminderCheckInterval) clearInterval(reminderCheckInterval);
+            
+            // Сбрасываем состояние
+            isPostActive = false;
+            startTime = null;
+            lastReportTime = null;
+            lastMinuteChecked = null;
+            nextReportTime = null;
+			copiedReports.clear();
+            
+            // Меняем текст кнопки обратно
+            document.getElementById('generateBtn').innerHTML =
+			'<img src="assets/generate-btn.png">';
+            
+            // Очищаем отчеты
+            document.getElementById('reportContainer').innerHTML = '';
+            
+            // Сбрасываем время следующего отчета
+            document.getElementById('nextReportTime').textContent = '--:--';
+            
+            saveToLocalStorage();
+        }
+        
+        function checkMinuteChange() {
+            const now = getMoscowTime();
+            const currentMinute = now.getUTCMinutes();
+            
+            if (currentMinute !== lastMinuteChecked) {
+                lastMinuteChecked = currentMinute;
+                updateReports();
+            }
+        }
+        
+        function updateReports() {
+            if (!isPostActive) return;
+            
+            const composition = document.getElementById('composition').value;
+            const postName = document.getElementById('postName').value;
+	    const objectName = document.getElementById('objectName') ? document.getElementById('objectName').value : '';
+            const rank = document.getElementById('rank').value;
+            const name = document.getElementById('name').value;
+            
+            const currentTime = getMoscowTime();
+            const startTimeFormatted = formatTime(startTime);
+            const currentTimeFormatted = formatTime(currentTime);
+            
+            // Создаем отчеты
+let report1, report2, report3, report4, report5;
+	const partnerName = document.getElementById('partnerName')?.value || 'Фамилия';
+if (postName === 'Пеший патруль') {
+    report1 = `Докладывает: ${rank} ${name} | Пост пешего патруля совместно с рядовым ${partnerName} заступил`;
+    report2 = `Докладывает: ${rank} ${name} | Пост пешего патруля совместно с рядовым ${partnerName} | Минуты-20`;
+    report3 = `Докладывает: ${rank} ${name} | Пост пешего патруля совместно с рядовым ${partnerName} | Минуты-40`;
+    report4 = `Докладывает: ${rank} ${name} | Пост пешего патруля совместно с рядовым ${partnerName} | Минуты-60`;
+    report5 = `Докладывает: ${rank} ${name} | Пост пешего патруля совместно с рядовым ${partnerName} сдал`;
+} else 
+if (postName === 'Выездной пост') {
+    report1 = `Докладывает: ${rank} ${name} | Выездной пост на Объект ${objectName} заступил`;
+    report2 = `Докладывает: ${rank} ${name} | Выездной пост на Объект ${objectName} | Минуты-20`;
+    report3 = `Докладывает: ${rank} ${name} | Выездной пост на Объект ${objectName} | Минуты-40`;
+    report4 = `Докладывает: ${rank} ${name} | Выездной пост на Объект ${objectName} | Минуты-60`;
+    report5 = `Докладывает: ${rank} ${name} | Выездной пост на Объект ${objectName} сдал`;
+} else if (postName === 'Совместный патруль с ССО') {
+    report1 = `Докладывает: ${rank} ${name} | Совместный патруль с ССО заступил`;
+    report2 = `Докладывает: ${rank} ${name} | Совместный патруль с ССО | Минуты-20`;
+    report3 = `Докладывает: ${rank} ${name} | Совместный патруль с ССО | Минуты-40`;
+    report4 = `Докладывает: ${rank} ${name} | Совместный патруль с ССО | Минуты-60`;
+    report5 = `Докладывает: ${rank} ${name} | Совместный патруль с ССО сдал`;
+} else if (postName === 'Дежурный по части') {
+    report1 = `Докладывает ${rank} ${name} | Пост Дежурный по части заступил`;
+    report2 = `Докладывает ${rank} ${name} | Пост Дежурный по части | Минуты 20`;
+    report3 = `Докладывает ${rank} ${name} | Пост Дежурный по части | Минуты 40`;
+    report4 = `Докладывает ${rank} ${name} | Пост Дежурный по части | Минуты 60`;
+    report5 = `Докладывает ${rank} ${name} | Пост Дежурный по части сдал`;
+} else {
+    report1 = `Докладывает ${rank} ${name} | Пост ${postName} заступил`;
+    report2 = `Докладывает ${rank} ${name} | Пост ${postName} | Минуты 20`;
+    report3 = `Докладывает ${rank} ${name} | Пост ${postName} | Минуты 40`;
+    report4 = `Докладывает ${rank} ${name} | Пост ${postName} | Минуты 60`;
+    report5 = `Докладывает ${rank} ${name} | Пост ${postName} сдал`;
+}     
+            // Очищаем контейнер
+            const container = document.getElementById('reportContainer');
+            container.innerHTML = '';
+            
+            // Добавляем блоки с отчетами
+            container.appendChild(createReportBlock(report1, '1. Доклад о заступлении на пост'));
+            container.appendChild(createReportBlock(report2, '2. 20 минут на посту'));
+            container.appendChild(createReportBlock(report3, '3. 40 минут на посту'));
+            container.appendChild(createReportBlock(report4, '4. 60 минут на посту'));
+            container.appendChild(createReportBlock(report5, '5. Доклад о сдаче поста'));
+            
+            // Показываем индикатор обновления
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            loadingIndicator.style.display = 'inline-block';
+            setTimeout(() => {
+                loadingIndicator.style.display = 'none';
+            }, 500);
+            
+            saveToLocalStorage();
+        }
+        
+        function setNextReportTime(minutesToAdd) {
+            const now = getMoscowTime();
+            lastReportTime = now;
+            nextReportTime = new Date(now.getTime() + minutesToAdd * 60 * 1000);
+            document.getElementById('nextReportTime').textContent = formatTime(nextReportTime);
+            saveToLocalStorage();
+        }
+        
+        function checkReminder() {
+            if (!isPostActive) return;
+            
+            const now = getMoscowTime();
+            if (nextReportTime && now >= nextReportTime) {
+                // Воспроизводим звук напоминания
+                const sound = document.getElementById('reminderSound');
+
+				if (soundEnabled) {
+					sound.play().catch(e => console.log('Не удалось воспроизвести звук:', e));
+				}
+                
+                // Подсвечиваем напоминание
+                const reminder = document.getElementById('reminder');
+                reminder.style.backgroundColor = '#ffcdd2';
+                reminder.style.borderColor = '#f44336';
+                
+                // Через 5 секунд возвращаем обычный цвет
+                setTimeout(() => {
+                    reminder.style.backgroundColor = '#fff3e0';
+                    reminder.style.borderColor = '#ff9800';
+                }, 5000);
+            }
+        }
+const ranksByGroup = {
+    private: [
+    'Рядовой',
+    'Ефрейтор'
+	],
+	sergeant: [
+        'Младший сержант',
+        'Сержант',
+        'Старший сержант',
+        'Старшина'
+    ],
+    warrant: [
+        'Прапорщик',
+        'Старший прапорщик'
+    ],
+    junior: [
+        'Младший лейтенант',
+        'Лейтенант',
+        'Старший лейтенант',
+        'Капитан'
+    ],
+    senior: [
+        'Майор',
+        'Подполковник',
+        'Полковник'
+    ],
+    high: [
+        'Генерал-майор',
+        'Генерал-лейтенант',
+        'Генерал-полковник',
+        'Генерал армии'
+    ]
+};
+
+function updateRankList() {
+    const group = document.getElementById('rankGroup').value;
+    const rankSelect = document.getElementById('rank');
+
+    rankSelect.innerHTML = '';
+
+    ranksByGroup[group].forEach(function(rank) {
+        const option = document.createElement('option');
+        option.value = rank;
+        option.textContent = rank;
+        rankSelect.appendChild(option);
+    });
+    updatePostList();
+	rebuildCustomRankSelect();
+    saveToLocalStorage();
+
+    if (isPostActive) {
+        updateReports();
+    }
+}
+
+	function updatePostList() {
+    const rank = document.getElementById('rank').value;
+    const postSelect = document.getElementById('postName');
+
+    const postsByRank = {
+			'Рядовой': [
+		'Штаб',
+		'КПП-1 (проходная)',
+		//'Вышка №1',
+		//'Вышка №4',
+		'Пеший патруль',
+		],
+
+		'Ефрейтор': [
+			'КПП-1',
+			'КПП-2'
+		],
+		'Младший сержант': ['КПП-1', 'КПП-2'],
+        'Сержант': ['КПП-1', 'КПП-2'],
+        'Старший сержант': [
+			'КПП-1',
+			'КПП-2',
+			'Выездной пост'
+			],
+		'Старшина': [
+			'КПП-1',
+			'КПП-2',
+			'Дежурный по КПП-1',
+			'Выездной пост'
+		],
+    	'Прапорщик': ['Выездной пост', 'Дежурный по КПП-1','Совместный патруль с ССО'],
+    	'Старший прапорщик': ['Выездной пост', 'Дежурный по КПП-1','Совместный патруль с ССО'],
+	'Младший лейтенант': ['Дежурный по КПП-1','Выездной пост'],
+
+'Лейтенант': [
+    'Дежурный по части',
+    'Дежурный по КПП-1',
+    'Выездной пост'
+],
+
+'Старший лейтенант': [
+    'Дежурный по части',
+    'Дежурный по КПП-1',
+    'Выездной пост'
+],
+
+'Капитан': [
+    'Дежурный по части',
+    'Дежурный по КПП-1',
+    'Выездной пост'
+]
+    };
+
+    const posts = postsByRank[rank] || ['КПП-1', 'КПП-2'];
+
+    postSelect.innerHTML = '';
+
+    posts.forEach(function(post) {
+        const option = document.createElement('option');
+        option.value = post;
+        option.textContent = post;
+        postSelect.appendChild(option);
+    });
+
+    toggleObjectField();
+	rebuildCustomPostSelect();
+
+    saveToLocalStorage();
+
+    if (isPostActive) {
+        updateReports();
+    }
+}
+	document.getElementById('rankGroup').addEventListener('change', updateRankList);
+	
+	document.querySelectorAll('.rank-btn').forEach(function(button) {
+    button.addEventListener('click', function() {
+        document.querySelectorAll('.rank-btn').forEach(function(btn) {
+            btn.classList.remove('active');
+        });
+
+        button.classList.add('active');
+
+        const group = button.getAttribute('data-group');
+        const rankGroupSelect = document.getElementById('rankGroup');
+
+        rankGroupSelect.value = group;
+        updateRankList();
+    });
+});
+
+	function toggleObjectField() {
+    		const postName = document.getElementById('postName').value;
+			const partnerGroup = document.getElementById('partnerGroup');
+			const objectGroup = document.getElementById('objectGroup');
+
+    	if (postName === 'Выездной пост') {
+       	 objectGroup.style.display = 'block';
+    	} else {
+        objectGroup.style.display = 'none';
+		 }
+
+		if (postName === 'Пеший патруль') {
+		partnerGroup.style.display = 'block';
+		} else {
+		partnerGroup.style.display = 'none';
+	}
+}
+
+	document.getElementById('rank').addEventListener('change', updatePostList);
+
+	document.getElementById('postName').addEventListener('change', toggleObjectField);
+        
+	document.getElementById('generateBtn').addEventListener('click', generateAllReports);
+        
+	document.getElementById('reportSubmittedBtn').addEventListener('click', function() { 
+		if (isPostActive) {
+        	const sound = document.getElementById('reminderSound');
+        	sound.pause();
+        	sound.currentTime = 0;
+        	const reminder = document.getElementById('reminder');
+        	reminder.style.backgroundColor = '#fff3e0';
+       		reminder.style.borderColor = '#ff9800';
+        	setNextReportTime(20);
+            }
+        });
+        const postSelect = document.getElementById('postSelect');
+const postCurrent = postSelect.querySelector('.custom-select-current');
+const postList = postSelect.querySelector('.custom-select-list');
+const realPostSelect = document.getElementById('postName');
+
+function rebuildCustomPostSelect() {
+    postList.innerHTML = '';
+
+    Array.from(realPostSelect.options).forEach(function(option) {
+        const item = document.createElement('div');
+        item.className = 'custom-option';
+        item.textContent = option.textContent;
+        item.dataset.value = option.value;
+
+        if (option.value === realPostSelect.value) {
+            postCurrent.innerHTML = option.textContent + '<span class="custom-arrow">▼</span>';
+        }
+
+        item.addEventListener('click', function() {
+            realPostSelect.value = item.dataset.value;
+            postCurrent.innerHTML = item.textContent + '<span class="custom-arrow">▼</span>';
+
+            postSelect.classList.remove('open');
+
+            toggleObjectField();
+            saveToLocalStorage();
+
+            if (isPostActive) {
+                updateReports();
+            }
+        });
+
+        postList.appendChild(item);
+    });
+}
+
+postCurrent.addEventListener('click', function() {
+    postSelect.classList.toggle('open');
+});
+
+document.addEventListener('click', function(e) {
+    if (!postSelect.contains(e.target)) {
+        postSelect.classList.remove('open');
+    }
+});
+const rankSelect = document.getElementById('rankSelect');
+const rankCurrent = rankSelect.querySelector('.custom-select-current');
+const rankList = rankSelect.querySelector('.custom-select-list');
+const realRankSelect = document.getElementById('rank');
+
+function rebuildCustomRankSelect() {
+    rankList.innerHTML = '';
+
+    Array.from(realRankSelect.options).forEach(function(option) {
+
+        const item = document.createElement('div');
+
+        item.className = 'custom-option';
+        item.textContent = option.textContent;
+        item.dataset.value = option.value;
+
+        if (option.value === realRankSelect.value) {
+            rankCurrent.innerHTML =
+                option.textContent +
+                '<span class="custom-arrow">▼</span>';
+        }
+
+        item.addEventListener('click', function() {
+
+            realRankSelect.value = item.dataset.value;
+
+            rankCurrent.innerHTML =
+                item.textContent +
+                '<span class="custom-arrow">▼</span>';
+
+            rankSelect.classList.remove('open');
+
+            updatePostList();
+			rebuildCustomRankSelect();
+            saveToLocalStorage();
+
+            if (isPostActive) {
+                updateReports();
+            }
+        });
+
+        rankList.appendChild(item);
+    });
+}
+
+rankCurrent.addEventListener('click', function() {
+    rankSelect.classList.toggle('open');
+});
+
+document.addEventListener('click', function(e) {
+    if (!rankSelect.contains(e.target)) {
+        rankSelect.classList.remove('open');
+    }
+});
+const objectSelect = document.getElementById('objectSelect');
+const objectCurrent = objectSelect.querySelector('.custom-select-current');
+const objectList = objectSelect.querySelector('.custom-select-list');
+const realObjectSelect = document.getElementById('objectName');
+
+function rebuildCustomObjectSelect() {
+
+    objectList.innerHTML = '';
+
+    Array.from(realObjectSelect.options).forEach(function(option) {
+
+        const item = document.createElement('div');
+
+        item.className = 'custom-option';
+        item.textContent = option.textContent;
+        item.dataset.value = option.value;
+
+        if (option.value === realObjectSelect.value) {
+            objectCurrent.innerHTML =
+                option.textContent +
+                '<span class="custom-arrow">▼</span>';
+        }
+
+        item.addEventListener('click', function() {
+
+            realObjectSelect.value = item.dataset.value;
+
+            objectCurrent.innerHTML =
+                item.textContent +
+                '<span class="custom-arrow">▼</span>';
+
+            objectSelect.classList.remove('open');
+
+            saveToLocalStorage();
+
+            if (isPostActive) {
+                updateReports();
+            }
+        });
+
+        objectList.appendChild(item);
+    });
+}
+
+objectCurrent.addEventListener('click', function() {
+    objectSelect.classList.toggle('open');
+});
+
+document.addEventListener('click', function(e) {
+    if (!objectSelect.contains(e.target)) {
+        objectSelect.classList.remove('open');
+    }
+});
+function updateClockPanel() {
+    const now = new Date();
+
+    const time = now.toLocaleTimeString('ru-RU', {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+    });
+
+    const date = now.toLocaleDateString('ru-RU');
+
+    document.getElementById('clockTime').textContent = time;
+    document.getElementById('clockDate').textContent = date;
+}
+
+updateClockPanel();
+setInterval(updateClockPanel, 1000);
+document.getElementById('soundToggleBtn').addEventListener('click', function() {
+
+    soundEnabled = !soundEnabled;
+
+    document.getElementById('soundToggleIcon').src =
+        soundEnabled
+        ? 'assets/sound-on.png'
+        : 'assets/sound-off.png';
+
+});
+        // Загружаем сохраненные данные при загрузке страницы
+window.addEventListener('load', function() {
+    loadFromLocalStorage();
+    updateRankList();
+
+    rebuildCustomRankSelect();
+    rebuildCustomPostSelect();
+    rebuildCustomObjectSelect();
+
+    toggleObjectField();
+});
+
+					</script>
+					</div>
+					</div>
+					</div>
+					</body>
+					</html>

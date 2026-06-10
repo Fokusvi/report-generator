@@ -1,0 +1,21 @@
+{
+  "name": "report-app",
+  "version": "1.0.0",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder"
+  },
+  "devDependencies": {
+    "electron": "^42.3.0",
+    "electron-builder": "^26.0.12"
+  },
+  "build": {
+    "appId": "com.report.app",
+    "productName": "Генератор Докладов",
+    "win": {
+      "target": "portable",
+      "icon": "icon.ico"
+    }
+  }
+}
