@@ -120,7 +120,7 @@
             font-family: 'Oswald', sans-serif;
             text-align: center;
             font-size: 18px;
-            margin-bottom: 10px;
+            margin-bottom: -3px;
             display: block;
             color: #cfc49a;
             border-bottom: 1px solid #3f482b;
@@ -167,7 +167,11 @@
         .rank-btn:hover {
             background: linear-gradient(180deg, #2a3521, #11170f);
         }
-
+        .rank-btn.disabled{
+            opacity:0.35;
+            cursor:not-allowed;
+            pointer-events:none;
+        }
         .rank-btn.active {
             background: linear-gradient(180deg, #4a5b2f, #29361c);
             border-color: #8fa85c;
@@ -485,6 +489,7 @@
 
         .report-content {
             padding-top: 4px;
+            padding-right: 56px;
         }
 
         .report-text {
@@ -721,7 +726,7 @@
             width: 100%;
             color: #e2d8ad;
             font-size: 14px;
-            z-index: 50;
+            z-index: 20000;
         }
 
         .custom-select-current {
@@ -929,11 +934,11 @@
 
         #soundToggleBtn {
             position: absolute;
-            top: 22px;
-            right: -1px;
+            top: 6px;
+            right: 13px;
 
-            width: 22px;
-            height: 22px;
+            width: 30px;
+            height: 28px;
 
             padding: 0;
             border: none;
@@ -949,6 +954,89 @@
             height: 100%;
             display: block;
             object-fit: fill;
+        }
+       .department-menu{
+        display:grid;
+        grid-template-columns:1fr 1fr;
+        gap:8px;
+        margin-bottom:15px;
+        }
+        .department-btn{
+           position:relative;
+            height:35px;
+            padding-left:42px;
+
+            background:linear-gradient(180deg,#182015,#0b0f0a);
+            border:1px solid #3f482b;
+
+            color:#d8d0aa;
+
+            font-family:'Oswald',sans-serif;
+            font-size:13px;
+            font-weight:600;
+            text-transform:uppercase;
+
+            cursor:pointer;
+            transition:0.2s;
+        }
+
+        .department-btn:hover{
+            background:linear-gradient(180deg,#2a3521,#11170f);
+        }
+
+        .department-btn.active{
+            background:linear-gradient(180deg,#4a5b2f,#29361c);
+            border-color:#8fa85c;
+            color:#ffffff;
+        }
+
+        .department-btn.active::before{
+            content:"";
+            position:absolute;
+            left:0;
+            top:0;
+            width:4px;
+            height:100%;
+            background:#d6e27a;
+            box-shadow:0 0 12px rgba(214,226,122,0.8);
+        }
+
+        .department-icon{
+             position:absolute;
+            left:6px;
+            top:50%;
+            transform:translateY(-50%);
+
+            width:36px;
+            height:36px;
+
+            background-size:contain;
+            background-position:center;
+            background-repeat:no-repeat;
+        }
+
+        .department-btn[data-dept="roio"] .department-icon{
+            background-image:url("assets/dept-roio.png");
+        }
+
+        .department-btn[data-dept="sso"] .department-icon{
+            background-image:url("assets/dept-sso.png");
+        }
+
+        .department-btn[data-dept="mr"] .department-icon{
+            background-image:url("assets/department-mr.png");
+        }
+
+        .department-btn[data-dept="vk"] .department-icon{
+            background-image:url("assets/dept-vk.png");
+        }
+
+        .department-btn[data-dept="vp"] .department-icon{
+            background-image:url("assets/dept-vp.png");
+        }
+
+        .department-btn[data-dept="va"] .department-icon{
+            background-image:url("assets/dept-va.png");
         }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&display=swap" rel="stylesheet">
@@ -979,6 +1067,40 @@
                 <div class="panel-border sidebar-border-bottom"></div>
                 <div class="panel-border sidebar-border-left"></div>
                 <div class="panel-border sidebar-border-right"></div>
+                <label>
+                ПОДРАЗДЕЛЕНИЕ
+                </label>
+                <div class="department-menu">
+                     <button type="button" class="department-btn active" data-dept="roio">
+                    <span class="department-icon"></span>
+                    РОиО
+                    </button>
+
+                    <button type="button" class="department-btn" data-dept="sso">
+                        <span class="department-icon"></span>
+                        ССО
+                    </button>
+
+                    <button type="button" class="department-btn" data-dept="mr">
+                        <span class="department-icon"></span>
+                        МР
+                    </button>
+
+                    <button type="button" class="department-btn" data-dept="vk">
+                        <span class="department-icon"></span>
+                        ВК
+                    </button>
+
+                    <button type="button" class="department-btn" data-dept="vp">
+                        <span class="department-icon"></span>
+                        ВП
+                    </button>
+
+                    <button type="button" class="department-btn" data-dept="va">
+                        <span class="department-icon"></span>
+                        ВА
+                    </button>
+                </div>
                 <label for="rankGroup">
                     ГРУППА ЗВАНИЙ
                 </label>
@@ -1153,7 +1275,22 @@
                         let lastReportTime = null;
                         let copiedReports = new Set();
                         let soundEnabled = false;
+                        let currentDepartment = 'roio';
+                        
+                        document.querySelectorAll('.department-btn').forEach(function (button) {
+                            button.addEventListener('click', function () {
 
+                                document.querySelectorAll('.department-btn').forEach(function (btn) {
+                                    btn.classList.remove('active');
+                                });
+
+                                button.classList.add('active');
+
+                                currentDepartment = button.getAttribute('data-dept');
+
+                                applyDepartmentRules();
+                            });
+                        });
 
                         // Загрузка сохраненных данных при запуске
                         function loadFromLocalStorage() {
@@ -1414,7 +1551,14 @@
                             // Создаем отчеты
                             let report1, report2, report3, report4, report5;
                             const partnerName = document.getElementById('partnerName')?.value || 'Фамилия';
-                            if (postName === 'Пеший патруль') {
+                            if (postName === 'Дежурный врач') {
+                                report1 = `Докладывает: ${rank} ${name} | Пост Дежурный врач принял`;
+                                report2 = `Докладывает: ${rank} ${name} | Пост Дежурный врач | Минуты-20`;
+                                report3 = `Докладывает: ${rank} ${name} | Пост Дежурный врач | Минуты-40`;
+                                report4 = `Докладывает: ${rank} ${name} | Пост Дежурный врач | Минуты-60`;
+                                report5 = `Докладывает: ${rank} ${name} | Пост Дежурный врач сдал`;
+                            }
+                            else if (postName === 'Пеший патруль') {
                                 report1 = `Докладывает: ${rank} ${name} | Пост пешего патруля совместно с рядовым ${partnerName} заступил`;
                                 report2 = `Докладывает: ${rank} ${name} | Пост пешего патруля совместно с рядовым ${partnerName} | Минуты-20`;
                                 report3 = `Докладывает: ${rank} ${name} | Пост пешего патруля совместно с рядовым ${partnerName} | Минуты-40`;
@@ -1532,14 +1676,88 @@
                                 'Генерал армии'
                             ]
                         };
+                        function applyDepartmentRules() {
+                            const rankButtons = document.querySelectorAll('.rank-btn');
+                            const rankGroupSelect = document.getElementById('rankGroup');
 
+                            rankButtons.forEach(function (btn) {
+                                const group = btn.getAttribute('data-group');
+
+                                btn.classList.remove('disabled');
+
+                                if (group === 'senior' || group === 'high') {
+                                    btn.classList.add('disabled');
+                                }
+                                else if (currentDepartment === 'va') {
+                                    if (group !== 'private' && group !== 'sergeant') {
+                                        btn.classList.add('disabled');
+                                    }
+                                }
+                                else if (currentDepartment === 'sso') {
+                                    if (group === 'private' || group === 'sergeant') {
+                                        btn.classList.add('disabled');
+                                    }
+                                }
+                                else {
+                                    if (group === 'private') {
+                                        btn.classList.add('disabled');
+                                    }
+                                }
+                            });
+
+                            if (currentDepartment === 'va') {
+                                if (rankGroupSelect.value !== 'private' && rankGroupSelect.value !== 'sergeant') {
+                                    rankGroupSelect.value = 'private';
+                                }
+                            }
+                            else if (currentDepartment === 'sso') {
+                                if (
+                                    rankGroupSelect.value === 'private' ||
+                                    rankGroupSelect.value === 'sergeant' ||
+                                    rankGroupSelect.value === 'senior' ||
+                                    rankGroupSelect.value === 'high'
+                                ) {
+                                    rankGroupSelect.value = 'warrant';
+                                }
+                            }
+                            else {
+                                if (
+                                    rankGroupSelect.value === 'private' ||
+                                    rankGroupSelect.value === 'senior' ||
+                                    rankGroupSelect.value === 'high'
+                                ) {
+                                    rankGroupSelect.value = 'sergeant';
+                                }
+                            }
+
+                            document.querySelectorAll('.rank-btn').forEach(function (btn) {
+                                btn.classList.remove('active');
+                            });
+
+                            document
+                                .querySelector(`.rank-btn[data-group="${rankGroupSelect.value}"]`)
+                                .classList.add('active');
+
+                            updateRankList();
+                        }
                         function updateRankList() {
                             const group = document.getElementById('rankGroup').value;
                             const rankSelect = document.getElementById('rank');
 
                             rankSelect.innerHTML = '';
 
-                            ranksByGroup[group].forEach(function (rank) {
+                            let availableRanks = ranksByGroup[group];
+                                if (currentDepartment === 'va') {
+                                    if (group === 'private') {
+                                        availableRanks = ['Рядовой', 'Ефрейтор'];
+                                    }
+
+                                    if (group === 'sergeant') {
+                                        availableRanks = ['Младший сержант'];
+                                    }
+                                }
+
+                                availableRanks.forEach(function (rank) {
                                 const option = document.createElement('option');
                                 option.value = rank;
                                 option.textContent = rank;
@@ -1608,7 +1826,20 @@
                             };
 
                             const posts = postsByRank[rank] || ['КПП-1', 'КПП-2'];
-
+                            if (
+                                currentDepartment === 'mr' &&
+                                (
+                                    rank === 'Старшина' ||
+                                    rank === 'Прапорщик' ||
+                                    rank === 'Старший прапорщик' ||
+                                    rank === 'Младший лейтенант' ||
+                                    rank === 'Лейтенант' ||
+                                    rank === 'Старший лейтенант' ||
+                                    rank === 'Капитан'
+                                )
+                            ) {
+                                posts.push('Дежурный врач');
+                            }
                             postSelect.innerHTML = '';
 
                             posts.forEach(function (post) {
@@ -1862,7 +2093,7 @@
                         // Загружаем сохраненные данные при загрузке страницы
                         window.addEventListener('load', function () {
                             loadFromLocalStorage();
-                            updateRankList();
+                            applyDepartmentRules();
 
                             rebuildCustomRankSelect();
                             rebuildCustomPostSelect();
